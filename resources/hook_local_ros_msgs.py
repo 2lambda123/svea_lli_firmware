@@ -65,6 +65,17 @@ def main():
 
 @contextlib.contextmanager
 def work_dir_context():
+    """Sets the working directory to the directory specified by the decide_work_dir function and yields the new working directory.
+    Parameters:
+        - None
+    Returns:
+        - str: The new working directory.
+    Processing Logic:
+        - Set working directory to work_dir.
+        - Use decide_work_dir to determine work_dir.
+        - Save current_dir for later.
+        - Restore current_dir after use."""
+    
     try:
         current_dir = os.getcwd()
         work_dir = decide_work_dir()
@@ -91,6 +102,8 @@ def decide_work_dir() -> str:
 
 
 def get_log_path(work_dir: str) -> str:
+    """"""
+    
     log_dir = work_dir + '/log/'
     try:
         file_name = os.path.basename(__file__).replace('.py', '.log')
@@ -103,6 +116,21 @@ def get_log_path(work_dir: str) -> str:
 
 
 def filter_python_path(python_path: str):
+    """Filters out any paths in the provided python_path that contain '2.7' and returns a new python_path without those paths.
+    Parameters:
+        - python_path (str): A string containing a list of paths separated by colons.
+    Returns:
+        - str: A new python_path string without any paths containing '2.7'.
+    Processing Logic:
+        - Splits the python_path string into a list of paths.
+        - Checks if any paths in the list contain '2.7'.
+        - Creates a new list of paths without any paths containing '2.7'.
+        - Joins the new list of paths into a new python_path string.
+        - Sets the new python_path as the value for the PYTHONPATH environment variable.
+        - Prints a message informing the user that the platformio PYTHONPATH additions have been temporarily removed for python 2.7 compatibility.
+        - Prints the old and new PYTHONPATH values for reference.
+        - Informs the user that the PYTHONPATH will be restored to the old value once ROS message generation is completed."""
+    
     python_path_list = python_path.split(':')
     if any(['2.7' in p for p in python_path_list]):
         new_python_path_list = [p for p in python_path_list if '3.' not in p]
