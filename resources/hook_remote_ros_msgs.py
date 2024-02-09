@@ -6,6 +6,8 @@
 #
 
 
+from security import safe_command
+
 Import("env")
 import os
 import subprocess
@@ -78,7 +80,7 @@ def main():
         print('------------------------------------------\n')
 
         # with open(log_path, "a") as sys.stdout:
-        ps = subprocess.Popen(("bash", f"{work_dir}/resources/shells/ros1_remote_deps",) + cmds,
+        ps = safe_command.run(subprocess.Popen, ("bash", f"{work_dir}/resources/shells/ros1_remote_deps",) + cmds,
                               stdout=sys.stdout, stderr=sys.stdout)
         time.sleep(1)
         ps.wait()

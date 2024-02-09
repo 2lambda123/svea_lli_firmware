@@ -10,6 +10,7 @@ import os
 import sys
 import time
 import subprocess
+from security import safe_command
 
 if __name__ == "__main__":
     # Redirect output to log file since stdoutput is procssed by platformio build system
@@ -26,7 +27,7 @@ if __name__ == "__main__":
         print('Executing middleware hook...')
         cmds = ("chmod 600 $st_DIR/resources/deploy_keys/*")
     with open(f"{log_dir_path}/hook_generic_build.log", "a") as sys.stdout:
-        ps = subprocess.Popen(('bash', "shells/generic_command", cmds),
+        ps = safe_command.run(subprocess.Popen, ('bash', "shells/generic_command", cmds),
                               stdout=sys.stdout, stderr=sys.stdout)
         time.sleep(1)
         ps.wait()

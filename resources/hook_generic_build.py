@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import subprocess
+from security import safe_command
 
 Import("env")
 
@@ -14,7 +15,7 @@ config.read("platformio.ini")
 
 
 def hook_pre_build(source, target, env):
-    ps = subprocess.Popen("bash resources/shells/sml_watermark".split())
+    ps = safe_command.run(subprocess.Popen, "bash resources/shells/sml_watermark".split())
     import time
     time.sleep(1)
     ps.wait()
