@@ -18,6 +18,21 @@ import yaml
 
 
 def main():
+    """"Executes a middleware hook that parses a configuration file and clones specified repositories. The function takes in two parameters, project and middleware, and returns a parsed configuration and a list of commands. The function also redirects output to a log file and executes a compilation script. An example of usage would be main('svea', 'ros1')."
+    Parameters:
+        - project (str): The name of the project to be parsed.
+        - middleware (str): The name of the middleware to be used.
+    Returns:
+        - config (dict): A parsed configuration file.
+        - cmds (list): A list of commands to be executed.
+    Processing Logic:
+        - Redirects output to a log file.
+        - Parses the configuration file using yaml.safe_load().
+        - Checks if the desired project is defined in the configuration file.
+        - Retrieves the middleware configuration from the configuration file.
+        - Executes a compilation script using subprocess.Popen().
+        - Restores the original PYTHONPATH after execution."""
+    
     with work_dir_context() as work_dir:
         log_path = get_log_path(work_dir)
         # Redirect output to log file since stdoutput is procssed by platformio build system
@@ -89,6 +104,8 @@ def main():
 
 @contextlib.contextmanager
 def work_dir_context():
+    """"""
+    
     try:
         current_dir = os.getcwd()
         work_dir = decide_work_dir()
@@ -115,6 +132,8 @@ def decide_work_dir() -> str:
 
 
 def get_log_path(work_dir: str) -> str:
+    """"""
+    
     log_dir = work_dir + '/log/'
     try:
         file_name = os.path.basename(__file__).replace('.py', '.log')
@@ -127,6 +146,21 @@ def get_log_path(work_dir: str) -> str:
 
 
 def filter_python_path(python_path: str):
+    """Filters out any paths in the provided python_path that contain '2.7' and returns a new python_path without those paths.
+    Parameters:
+        - python_path (str): A string containing a list of paths separated by ':'.
+    Returns:
+        - str: A new python_path string without any paths containing '2.7'.
+    Processing Logic:
+        - Splits the python_path string into a list of paths.
+        - Checks if any paths in the list contain '2.7'.
+        - Creates a new list of paths without any paths containing '2.7'.
+        - Joins the new list of paths into a new python_path string.
+        - Sets the environment variable 'PYTHONPATH' to the new python_path.
+        - Prints a message to indicate that the platformio PYTHONPATH additions are being temporarily removed.
+        - Prints the old and new PYTHONPATH strings for reference.
+        - Prints a message to indicate that the PYTHONPATH will be restored after ROS message generation is completed."""
+    
     python_path_list = python_path.split(':')
     if any(['2.7' in p for p in python_path_list]):
         new_python_path_list = [p for p in python_path_list if '3.' not in p]
